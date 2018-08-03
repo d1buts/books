@@ -92,12 +92,10 @@ export default {
     updateSortByBookName ($event) {
       this.sortByAuthorSelected = null
       this.sortedBooksList = this.sortBooks($event)
-      console.log($event, this.sortByBooksNameSelected, ' this.updateSortByBookName')
     },
     updateSortByAuthorName ($event) {
       this.sortByBooksNameSelected = null
       this.sortedBooksList = this.sortBooks($event)
-      console.log($event, this.sortByAuthorSelected, ' this.updateSortByAuthorName')
     },
     sortBooks (configKey) {
       if (!configKey) {
