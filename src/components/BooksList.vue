@@ -24,9 +24,9 @@
         </div>
         <br>
         <ListAndPagination
-          :booksList="preparedBooksList"
+          :booksList="sortedBooksList"
         />
-        <p class="sak">{{ preparedBooksList }}</p>
+        <p class="sak">{{ sortedBooksList }}</p>
       </div>
     </div>
   </div>
@@ -48,17 +48,6 @@ export default {
     }),
     totalBooks () {
       return this.getBooksList.length
-    },
-    // sortedBooksList () {
-    //   if(this.sortByBooksNameSelected  && this.sortByAuthorSelected) {
-    //     return this.getBooksList
-    //   }
-    // },
-    preparedBooksList () {
-      if (this.sortedBooksList.length) {
-        return this.sortedBooksList
-      }
-      return this.getBooksList
     }
   },
   methods: {
@@ -131,11 +120,16 @@ export default {
         c: this.sortByAuthorAZ,
         d: this.sortByAuthorZA
       },
-      sortedBooksList: null
+      sortedBooksList: []
     }
   },
   created () {
-    this.sortedBooksList = this.getBooksList
+    const unwatch = this.$watch('getBooksList', function () {
+      if (this.getBooksList.length) {
+        this.sortedBooksList = this.getBooksList
+        unwatch()
+      }
+    })
   }
 }
 </script>
