@@ -26,7 +26,6 @@
         <ListAndPagination
           :booksList="sortedBooksList"
         />
-        <p class="sak">{{ sortedBooksList }}</p>
       </div>
     </div>
   </div>
@@ -40,6 +39,13 @@ export default {
   name: 'BooksList',
   components: {
     ListAndPagination
+  },
+  watch: {
+    getBooksList: function (oldVal, newVal) {
+      if (this.getBooksList.length) {
+        this.sortedBooksList = this.getBooksList
+      }
+    }
   },
   computed: {
     ...mapGetters({
@@ -120,16 +126,11 @@ export default {
         c: this.sortByAuthorAZ,
         d: this.sortByAuthorZA
       },
-      sortedBooksList: []
+      sortedBooksList: null
     }
   },
   created () {
-    const unwatch = this.$watch('getBooksList', function () {
-      if (this.getBooksList.length) {
-        this.sortedBooksList = this.getBooksList
-        unwatch()
-      }
-    })
+    this.sortedBooksList = this.getBooksList
   }
 }
 </script>
