@@ -36,7 +36,6 @@
 import { mapGetters } from 'vuex'
 import ListAndPagination from '@/components/partials/ListAndPagination'
 
-const defaultVelueOfSelect = 'default'
 export default {
   name: 'BooksList',
   components: {
@@ -48,10 +47,18 @@ export default {
       getAuthorById: 'books/getAuthorById'
     }),
     totalBooks () {
-      return this.preparedBooksList.length || this.getBooksList.length
+      return this.getBooksList.length
     },
+    // sortedBooksList () {
+    //   if(this.sortByBooksNameSelected  && this.sortByAuthorSelected) {
+    //     return this.getBooksList
+    //   }
+    // },
     preparedBooksList () {
-      return this.sortedBooksList || this.getBooksList
+      if (this.sortedBooksList.length) {
+        return this.sortedBooksList
+      }
+      return this.getBooksList
     }
   },
   methods: {
@@ -87,29 +94,34 @@ export default {
     sortByAuthorZA () {
       return this.sortByAuthorAZ().reverse()
     },
-    updateSortByBookName () {
-      this.sortByAuthorSelected = defaultVelueOfSelect
-      this.sortConfigKey = this.sortByAuthorSelected
-      this.sortedBooksList = this.sortingConfig[this.sortConfigKey]()
+    updateSortByBookName ($event) {
+      this.sortByAuthorSelected = null
+      this.sortedBooksList = this.sortBooks($event)
+      console.log($event, this.sortByBooksNameSelected, ' this.updateSortByBookName')
     },
-    updateSortByAuthorName () {
-      this.sortByBooksNameSelected = defaultVelueOfSelect
-      this.sortConfigKey = this.sortByBooksNameSelected
-      this.sortedBooksList = this.sortingConfig[this.sortConfigKey]()
+    updateSortByAuthorName ($event) {
+      this.sortByBooksNameSelected = null
+      this.sortedBooksList = this.sortBooks($event)
+      console.log($event, this.sortByAuthorSelected, ' this.updateSortByAuthorName')
+    },
+    sortBooks (configKey) {
+      if (!configKey) {
+        return this.getBooksList
+      }
+      return this.sortingConfig[configKey]()
     }
   },
   data () {
     return {
-      sortConfigKey: defaultVelueOfSelect,
-      sortByBooksNameSelected: defaultVelueOfSelect,
+      sortByBooksNameSelected: null,
       sortByBooksNameOptions: [
-        { value: defaultVelueOfSelect, text: 'None chosen' },
+        { value: null, text: 'None chosen' },
         { value: 'a', text: 'Sort A-Z' },
         { value: 'b', text: 'Sort Z-A' }
       ],
-      sortByAuthorSelected: defaultVelueOfSelect,
+      sortByAuthorSelected: null,
       sortByAuthorOptions: [
-        { value: defaultVelueOfSelect, text: 'None chosen' },
+        { value: null, text: 'None chosen' },
         { value: 'c', text: 'Sort A-Z' },
         { value: 'd', text: 'Sort Z-A' }
       ],
@@ -117,11 +129,13 @@ export default {
         a: this.sortByBookNameAZ,
         b: this.sortByBookNameZA,
         c: this.sortByAuthorAZ,
-        d: this.sortByAuthorZA,
-        [defaultVelueOfSelect]: () => this.getBooksList
+        d: this.sortByAuthorZA
       },
       sortedBooksList: null
     }
+  },
+  created () {
+    this.sortedBooksList = this.getBooksList
   }
 }
 </script>
