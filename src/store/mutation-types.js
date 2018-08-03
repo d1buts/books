@@ -1,0 +1,1 @@
+export const SAVE_AUTHORS_LIST = 'SAVE_AUTHORS_LIST'
